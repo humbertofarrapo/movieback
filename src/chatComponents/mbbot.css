@@ -20,8 +20,10 @@
     display: block;
    
     width: 100%;
-    max-width: var(--chat-max-width);
+    max-width: 320px;
     height: auto;
+
+    object-fit: contain;
    
     margin: 0 auto 8px auto;
     box-sizing: border-box;
@@ -730,14 +732,13 @@
        ==================================== */
 
     .movieback-banner {
-        width: calc(100% - 100px);
-        max-width: none;
-
-        margin-left: 10px;
-        margin-right: 10px;
-        margin-bottom: 12px;
-
-        box-sizing: border-box;
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+        
+        object-fit: contain;
+        
+        margin: 0 auto 8px auto;
     }
 
 
