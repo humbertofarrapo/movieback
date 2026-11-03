@@ -24,7 +24,7 @@
    ======================================== */
 
 .chat-wrapper {
-    position: relative;
+    position: relative; /* Essencial para conter elementos absolutos, como o loading */
 
     width: 100%;
     max-width: 600px;
@@ -43,6 +43,11 @@
     max-width: 100% !important;
     min-width: 0 !important;
 
+    /* Altura adaptável e flexível em qualquer dispositivo */
+    height: 80dvh !important;
+    max-height: 80dvh !important;
+    min-height: 400px !important;
+
     box-sizing: border-box !important;
 }
 
@@ -56,6 +61,12 @@
     max-width: 100% !important;
     min-width: 0 !important;
 
+    height: 100% !important;
+    max-height: 100% !important;
+    
+    display: flex !important;
+    flex-direction: column !important;
+
     box-sizing: border-box !important;
 }
 
@@ -68,6 +79,11 @@
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
+
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    scroll-behavior: smooth !important; /* Rolagem suave para novas mensagens */
 
     padding-left: 12px !important;
     padding-right: 12px !important;
@@ -358,10 +374,9 @@
     text-decoration: underline;
 
     /*
-       Mantemos "anywhere" para URLs muito longas,
-       evitando que elas ultrapassem a bolha.
+        Mantemos "anywhere" para URLs muito longas,
+        evitando que elas ultrapassem a bolha.
     */
-
     overflow-wrap: anywhere;
     word-break: break-word;
 }
@@ -468,7 +483,7 @@
 
 
 /* ========================================
-   Tabelas Markdown
+   Tabelas Markdown (Refinadas com scroll horizontal seguro)
    ======================================== */
 
 .movieback-markdown table {
@@ -477,7 +492,10 @@
 
     border-collapse: collapse;
 
-    table-layout: fixed;
+    table-layout: auto; /* Ajuste natural de colunas para melhor adaptação */
+    display: block;
+    overflow-x: auto; /* Garante rolagem em telas pequenas sem quebrar o layout */
+    -webkit-overflow-scrolling: touch;
 
     margin: 12px 0;
 }
@@ -485,7 +503,6 @@
 
 .movieback-markdown th,
 .movieback-markdown td {
-
     border: 1px solid rgba(0, 0, 0, 0.2);
 
     padding: 8px;
@@ -709,26 +726,6 @@
     }
 }
 
-/* Altura adaptável em qualquer dispositivo */
-.react-chatbot-kit-chat-container {
-    height: 80dvh !important;
-    max-height: 80dvh !important;
-    min-height: 400px !important;
-}
-
-.react-chatbot-kit-chat-inner-container {
-    height: 100% !important;
-    max-height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-
-.react-chatbot-kit-chat-message-container {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    overflow-y: auto !important;
-}
-
 
 /* ========================================
    Responsividade para Smartphones
@@ -753,17 +750,16 @@
 
 
     /* ====================================
-       Wrapper do Chat
+       Wrapper do Chat (Corrigido o alinhamento simétrico)
        ==================================== */
 
     .chat-wrapper {
-        width: calc(100% - 5px);
+        width: calc(100% - 20px); /* Desconto simétrico de 10px para cada lado */
         max-width: none;
         min-width: 0;
         height: auto;
 
-        margin-left: 10px;
-        margin-right: 10px;
+        margin: 0 auto; /* Centraliza automaticamente sem quebras */
 
         box-sizing: border-box;
     }
@@ -896,8 +892,8 @@
 
 
     /*
-       Links permanecem com quebra agressiva para
-       evitar que URLs extensas aumentem a largura.
+        Links permanecem com quebra agressiva para
+        evitar que URLs extensas aumentem a largura.
     */
 
     .movieback-markdown a {
@@ -946,13 +942,12 @@
         width: 100%;
         max-width: 100%;
 
-        table-layout: fixed;
+        table-layout: auto;
     }
 
 
     .movieback-markdown th,
     .movieback-markdown td {
-
         padding: 6px;
 
         font-size: 0.9rem;
@@ -1009,10 +1004,9 @@
         box-sizing: border-box !important;
 
         /*
-           16px evita o zoom automático do Safari
-           ao tocar no input.
+            16px evita o zoom automático do Safari
+            ao tocar no input.
         */
-
         font-size: 16px !important;
     }
 
