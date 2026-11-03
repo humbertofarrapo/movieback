@@ -739,6 +739,8 @@
         object-fit: cover;
         
         margin: 0 auto 8px auto;
+        
+        box-sizing: border-box;
     }
 
 
