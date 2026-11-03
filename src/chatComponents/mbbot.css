@@ -23,7 +23,7 @@
     max-width: var(--chat-max-width);
     height: auto;
 
-    object-fit: contain;
+    object-fit: cover;
    
     margin: 0 auto 8px auto;
     box-sizing: border-box;
@@ -725,7 +725,7 @@
    Responsividade para Smartphones
    ======================================== */
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
 
     /* ====================================
        Banner
@@ -736,7 +736,7 @@
         max-width: var(--chat-max-width);
         height: auto;
         
-        object-fit: contain;
+        object-fit: cover;
         
         margin: 0 auto 8px auto;
     }
