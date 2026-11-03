@@ -709,6 +709,26 @@
     }
 }
 
+/* Altura adaptável em qualquer dispositivo */
+.react-chatbot-kit-chat-container {
+    height: 80dvh !important;
+    max-height: 80dvh !important;
+    min-height: 400px !important;
+}
+
+.react-chatbot-kit-chat-inner-container {
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.react-chatbot-kit-chat-message-container {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+}
+
 
 /* ========================================
    Responsividade para Smartphones
