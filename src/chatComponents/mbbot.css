@@ -749,8 +749,8 @@
        ==================================== */
 
     .chat-wrapper {
-        width: 100%;
-        max-width: var(--chat-max-width);
+        width: calc(100% - 5px);
+        max-width: none;
         min-width: 0;
         height: auto;
 
