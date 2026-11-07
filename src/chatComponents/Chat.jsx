@@ -27,6 +27,7 @@ function generateSessionId() {
   const agora = new Date();
 
   const ano = agora.getFullYear();
+
   const mes = String(
     agora.getMonth() + 1
   ).padStart(2, '0');
@@ -49,16 +50,14 @@ function generateSessionId() {
 
   const data = `${ano}${mes}${dia}`;
 
-  const horario =
-    `${hora}${minuto}${segundo}`;
+  const horario = `${hora}${minuto}${segundo}`;
 
   const turno = getTurno();
 
 
   // Identifica o navegador
   const browser = (() => {
-    const ua =
-      navigator.userAgent.toLowerCase();
+    const ua = navigator.userAgent.toLowerCase();
 
     if (
       ua.includes('chrome') &&
@@ -93,7 +92,7 @@ function generateSessionId() {
   })();
 
 
-  // Pequeno identificador aleatório
+  // Identificador aleatório
   const randomId = Math.random()
     .toString(36)
     .substring(2, 8);
@@ -104,15 +103,6 @@ function generateSessionId() {
     `${turno}_${browser}_${randomId}`
   );
 }
-
-
-const sessionId =
-  generateSessionId();
-
-console.log(
-  'Session ID gerado:',
-  sessionId
-);
 
 
 // =====================================================
@@ -126,8 +116,7 @@ const config = {
     {
       type: 'bot',
       id: '1',
-      message:
-        chatConfig.bot.initialMessage,
+      message: chatConfig.bot.initialMessage,
     },
   ],
 
@@ -164,8 +153,7 @@ const config = {
 
           border:
             `2px solid ` +
-            chatConfig.colors
-              .botAvatarBorder,
+            chatConfig.colors.botAvatarBorder,
 
           padding: 3,
         }}
@@ -188,8 +176,7 @@ const config = {
 
           border:
             `2px solid ` +
-            chatConfig.colors
-              .userAvatarBorder,
+            chatConfig.colors.userAvatarBorder,
 
           padding: 3,
         }}
@@ -198,9 +185,7 @@ const config = {
 
 
     botChatMessage: (props) => (
-      <MarkdownMessage
-        {...props}
-      />
+      <MarkdownMessage {...props} />
     ),
   },
 };
@@ -216,9 +201,7 @@ const MessageParser = ({
 }) => {
 
   const parse = (message) => {
-    actions.handleUserMessage(
-      message
-    );
+    actions.handleUserMessage(message);
   };
 
 
@@ -243,107 +226,99 @@ const ActionProvider = ({
   setState,
   children,
   setLoading,
+  sessionId,
 }) => {
 
-  const handleUserMessage =
-    async (message) => {
+  const handleUserMessage = async (message) => {
 
-      setLoading(true);
+    setLoading(true);
 
+    try {
 
-      try {
+      const response = await fetch(
+        chatConfig.backend.webhookUrl,
+        {
+          method: 'POST',
 
-        const response =
-          await fetch(
-            chatConfig.backend
-              .webhookUrl,
-            {
-              method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
 
-              headers: {
-                'Content-Type':
-                  'application/json',
+            'x-requested-with':
+              'XMLHttpRequest',
+          },
 
-                'x-requested-with':
-                  'XMLHttpRequest',
-              },
+          body: JSON.stringify({
+            sessionId: sessionId,
 
-              body: JSON.stringify({
-                sessionId:
-                  sessionId,
-
-                user_message:
-                  message,
-              }),
-            }
-          );
-
-
-        if (!response.ok) {
-          throw new Error(
-            `Erro HTTP: ${response.status}`
-          );
+            user_message: message,
+          }),
         }
+      );
 
 
-        const data =
-          await response.json();
-
-
-        console.log(data[0]);
-
-
-        const botReply =
-          data?.[0]?.output ||
-          'Não consegui entender sua solicitação.';
-
-
-        const botMessage =
-          createChatBotMessage(
-            botReply
-          );
-
-
-        setState((prev) => ({
-          ...prev,
-
-          messages: [
-            ...prev.messages,
-            botMessage,
-          ],
-        }));
-
-
-      } catch (error) {
-
-        console.error(
-          'Erro ao conectar com o Webhook:',
-          error
+      if (!response.ok) {
+        throw new Error(
+          `Erro HTTP: ${response.status}`
         );
-
-
-        const botMessage =
-          createChatBotMessage(
-            'Erro ao conectar com o agente de IA 😢'
-          );
-
-
-        setState((prev) => ({
-          ...prev,
-
-          messages: [
-            ...prev.messages,
-            botMessage,
-          ],
-        }));
-
-
-      } finally {
-
-        setLoading(false);
-
       }
-    };
+
+
+      const data = await response.json();
+
+
+      console.log('Resposta do Webhook:', data);
+
+
+      const botReply =
+        data?.[0]?.output ||
+        data?.output ||
+        'Não consegui entender sua solicitação.';
+
+
+      const botMessage = createChatBotMessage(
+        botReply
+      );
+
+
+      setState((prev) => ({
+        ...prev,
+
+        messages: [
+          ...prev.messages,
+          botMessage,
+        ],
+      }));
+
+
+    } catch (error) {
+
+      console.error(
+        'Erro ao conectar com o Webhook:',
+        error
+      );
+
+
+      const botMessage = createChatBotMessage(
+        'Erro ao conectar com o agente de IA 😢'
+      );
+
+
+      setState((prev) => ({
+        ...prev,
+
+        messages: [
+          ...prev.messages,
+          botMessage,
+        ],
+      }));
+
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
 
 
   return React.Children.map(
@@ -368,24 +343,36 @@ const ActionProvider = ({
 
 export default function Chat() {
 
+
+  // Cada nova instância do Chat recebe um ID próprio
+  const [sessionId] = useState(
+    () => generateSessionId()
+  );
+
+
+  console.log(
+    'Session ID da conversa:',
+    sessionId
+  );
+
+
   const [
     isLoading,
     setIsLoading,
   ] = useState(false);
 
 
-  const CustomActionProvider =
-    (props) => (
+  const CustomActionProvider = (props) => (
 
-      <ActionProvider
-        {...props}
+    <ActionProvider
+      {...props}
 
-        setLoading={
-          setIsLoading
-        }
-      />
+      setLoading={setIsLoading}
 
-    );
+      sessionId={sessionId}
+    />
+
+  );
 
 
   return (
@@ -394,66 +381,53 @@ export default function Chat() {
       style={{
         display: 'flex',
 
-        flexDirection:
-          'column',
+        flexDirection: 'column',
 
-        alignItems:
-          'center',
+        alignItems: 'center',
 
-        justifyContent:
-          'flex-start',
+        justifyContent: 'flex-start',
 
         width: '100%',
 
-        minHeight:
-          '100vh',
+        minHeight: '100vh',
 
         margin: 0,
 
-        paddingTop:
-          '1px',
+        paddingTop: '1px',
 
-        boxSizing:
-          'border-box',
+        boxSizing: 'border-box',
       }}
     >
 
       {/* Banner */}
 
       <img
-  src={`${import.meta.env.BASE_URL}${chatConfig.images.banner}`}
-  alt={chatConfig.bot.name}
-  className="movieback-banner"
-/>
+        src={
+          `${import.meta.env.BASE_URL}` +
+          chatConfig.images.banner
+        }
+        alt={chatConfig.bot.name}
+        className="movieback-banner"
+      />
 
 
       {/* Chat */}
 
-      <div
-        className="chat-wrapper"
-      >
+      <div className="chat-wrapper">
 
         <Chatbot
           config={config}
 
-          messageParser={
-            MessageParser
-          }
+          messageParser={MessageParser}
 
-          actionProvider={
-            CustomActionProvider
-          }
+          actionProvider={CustomActionProvider}
 
           headerText={
-            chatConfig
-              .interface
-              .headerText
+            chatConfig.interface.headerText
           }
 
           placeholderText={
-            chatConfig
-              .interface
-              .placeholderText
+            chatConfig.interface.placeholderText
           }
         />
 
@@ -462,27 +436,16 @@ export default function Chat() {
 
         {isLoading && (
 
-          <div
-            className=
-              "movieback-loading"
-          >
+          <div className="movieback-loading">
 
-            <span
-              className=
-                "movieback-loading-text"
-            >
+            <span className="movieback-loading-text">
               {
-                chatConfig
-                  .interface
-                  .loadingText
+                chatConfig.interface.loadingText
               }
             </span>
 
 
-            <span
-              className=
-                "loading-dots"
-            >
+            <span className="loading-dots">
 
               <span></span>
               <span></span>
@@ -497,5 +460,6 @@ export default function Chat() {
       </div>
 
     </div>
+
   );
 }
