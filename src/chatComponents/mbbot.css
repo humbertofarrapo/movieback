@@ -195,7 +195,7 @@
 
 
 .react-chatbot-kit-user-chat-message {
-    background-color: #D9EAFB !important;
+    background-color: #ABD1F6  !important;
     color: rgb(82, 79, 79) !important;
 
     border-radius: 12px !important;
@@ -222,7 +222,7 @@
    ======================================== */
 
 .react-chatbot-kit-user-chat-message-arrow {
-    border-left: 10px solid #D9EAFB !important;
+    border-left: 10px solid #ABD1F6  !important;
     border-right: none !important;
 
     margin-right: 0 !important;
