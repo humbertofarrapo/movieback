@@ -3,7 +3,7 @@ import remarkGfm from 'remark-gfm';
 
 export default function MarkdownMessage({ message }) {
      return (
-         <div className="react-chatbot-kit-chat-bot-message mentoria-markdown">
+         <div className="react-chatbot-kit-chat-bot-message movieback-markdown">
          <ReactMarkdown remarkPlugins={[remarkGfm]}>
              {message}
          </ReactMarkdown> 
