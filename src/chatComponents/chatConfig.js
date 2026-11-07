@@ -11,7 +11,7 @@ const chatConfig = {
     interface: {
       headerText: 'Assistente Virtual - Recomendação',
       placeholderText: 'Pergunte ao MovieBack...',
-      loadingText: '🔎 Consultando a base de conhecimento',
+      //loadingText: '🔎 Consultando a base de conhecimento',
     },
   
     images: {
