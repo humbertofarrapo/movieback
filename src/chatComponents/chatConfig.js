@@ -9,7 +9,7 @@ const chatConfig = {
     },
   
     interface: {
-      headerText: 'MovieBack - Assistente Recomendador de Filmes',
+      headerText: 'Assistente Recomendador de Filmes',
       placeholderText: 'Pergunte ao MovieBack...',
       //loadingText: '🔎 Consultando a base de conhecimento',
     },
